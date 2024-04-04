@@ -1,7 +1,7 @@
-def numToColor(arr)
+def numToColor(inputArr)
 end
 
-def colorToNum(arr)
+def colorToNum(inputArr)
 end
 
 def printBoard(turns, guessBoard, pegsArr)
@@ -17,6 +17,22 @@ def printBoard(turns, guessBoard, pegsArr)
     puts
 end
 
+# Loop to find exact positions, ie [1, 2, 2, 1] & [2, 2, 2, 4] = 2
+# Must loop this first to remove exact matches from the set.
+def findExact(tempCode, inputArr)
+    pegs = 0
+    for a in 0..3 do
+        if tempCode[a].eql? inputArr[a]
+            # We have to remove the matching colors from the set;
+            tempCode[a] = 5
+            inputArr[a] = 6
+            # and add to the peg total.
+            pegs += 1
+        end
+    end
+    return pegs
+end
+
 turns = 12
 code = Array.new(4) { rand(1...5) } # Populate with random values 1-4
 guessBoard = Array.new(12) { Array.new(4) { 0 } }
@@ -30,34 +46,23 @@ loopCountdown = turns
 
 # Main game loop
 while loopCountdown >= 1
-    exactPegs = 0
     inexactPegs = 0
     tempCode = code.map(&:clone)    # Copy code array to not modify it
     
     puts "What would you like to guess?"
-    arr = gets.chomp.split(' ').map(&:to_i) # Collect user input as array
-    guessBoard[count] = arr.map(&:clone)
+    inputArr = gets.chomp.split(' ').map(&:to_i) # Collect user input as array
+    guessBoard[count] = inputArr.map(&:clone)
     
-    # Loop to find exact positions, ie [1, 2, 2, 1] & [2, 2, 2, 4] = 2
-    # Must loop this first to remove exact matches from the set.
-    for a in 0..3 do
-        if tempCode[a].eql? arr[a]
-            # We have to remove the matching colors from the set,
-            tempCode[a] = 5
-            arr[a] = 6
-            # and add to the peg total.
-            exactPegs += 1
-        end
-    end
+    exactPegs = findExact(tempCode, inputArr)
     
     
     # Loop to find similar colors, ie [4, 5, 5, 1] & [2, 6, 6, 4] = 1
     for a in 0..3 do
         for b in 0..3 do
-            if tempCode[a].eql? arr[b]
+            if tempCode[a].eql? inputArr[b]
                 # We have to remove the matching colors from the set,
                 tempCode[a] = 5
-                arr[b] = 6
+                inputArr[b] = 6
                 # and add to the peg total.
                 inexactPegs += 1
             end
