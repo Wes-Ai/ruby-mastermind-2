@@ -53,8 +53,17 @@ end
 turns = 12  # Adjust to lengthen or shorten game
 loopCountdown = turns
 count = 0
+exitedLoop = true
 
-code = Array.new(4) { rand(1...5) } # Populate with random values 1-4
+puts "Would you like to be the player (0) or creator (1)?"
+if gets.chomp.eql? "0"    # CPU random generated code
+    code = Array.new(4) { rand(1...5) } # Populate with random values 1-4
+else
+    puts "Enter your 4 digit code: "
+    code = gets.chomp.split(' ').map(&:to_i) # Collect user input as array
+end
+
+
 guessBoard = Array.new(turns) { Array.new(4) { 0 } }
 pegsArr = Array.new(turns) { Array.new(2) { 0 } }
 
@@ -78,10 +87,14 @@ while loopCountdown >= 1
     if exactPegs.eql? 4
         p 'Congratulations, you won!'
         loopCountdown = 0
+        exitedLoop = false
     else
         printBoard(turns, guessBoard, pegsArr)
         loopCountdown = loopCountdown - 1
     end
 end
 
-puts "Sorry, you lost! The code was: #{code}"
+if exitedLoop
+    puts "Sorry, you lost! The code was: #{code}"
+end
+    
