@@ -33,30 +33,9 @@ def findExact(tempCode, inputArr)
     return pegs
 end
 
-turns = 12
-code = Array.new(4) { rand(1...5) } # Populate with random values 1-4
-guessBoard = Array.new(12) { Array.new(4) { 0 } }
-pegsArr = Array.new(12) { Array.new(2) { 0 } }
-
-# p code
-
-count = 0
-
-loopCountdown = turns
-
-# Main game loop
-while loopCountdown >= 1
-    inexactPegs = 0
-    tempCode = code.map(&:clone)    # Copy code array to not modify it
-    
-    puts "What would you like to guess?"
-    inputArr = gets.chomp.split(' ').map(&:to_i) # Collect user input as array
-    guessBoard[count] = inputArr.map(&:clone)
-    
-    exactPegs = findExact(tempCode, inputArr)
-    
-    
-    # Loop to find similar colors, ie [4, 5, 5, 1] & [2, 6, 6, 4] = 1
+# Loop to find similar colors, ie [4, 5, 5, 1] & [2, 6, 6, 4] = 1
+def findInexact(tempCode, inputArr)
+    pegs = 0
     for a in 0..3 do
         for b in 0..3 do
             if tempCode[a].eql? inputArr[b]
@@ -64,10 +43,32 @@ while loopCountdown >= 1
                 tempCode[a] = 5
                 inputArr[b] = 6
                 # and add to the peg total.
-                inexactPegs += 1
+                pegs += 1
             end
         end
     end
+    return pegs
+end
+
+turns = 12  # Adjust to lengthen or shorten game
+loopCountdown = turns
+count = 0
+
+code = Array.new(4) { rand(1...5) } # Populate with random values 1-4
+guessBoard = Array.new(turns) { Array.new(4) { 0 } }
+pegsArr = Array.new(turns) { Array.new(2) { 0 } }
+
+
+# Main game loop
+while loopCountdown >= 1
+    tempCode = code.map(&:clone)    # Copy code array to not modify it
+    
+    puts "What would you like to guess?"
+    inputArr = gets.chomp.split(' ').map(&:to_i) # Collect user input as array
+    guessBoard[count] = inputArr.map(&:clone)
+    
+    exactPegs = findExact(tempCode, inputArr)
+    inexactPegs = findInexact(tempCode, inputArr)
 
     pegsArr[count][0] = exactPegs
     pegsArr[count][1] = inexactPegs
@@ -82,3 +83,5 @@ while loopCountdown >= 1
         loopCountdown = loopCountdown - 1
     end
 end
+
+puts "Sorry, you lost! The code was: #{code}"
