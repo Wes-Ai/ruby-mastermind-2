@@ -50,10 +50,19 @@ def findInexact(tempCode, inputArr)
     return pegs
 end
 
+def cpuGuess(count, pegsArr)
+    if count.eql? 0
+        guess = Array.new(4) { rand(1...5) } # 1st guess is random
+    end
+
+    return guess
+end
+
 turns = 12  # Adjust to lengthen or shorten game
 loopCountdown = turns
 count = 0
 exitedLoop = true
+cpuPlaying = false
 
 puts "Would you like to be the player (0) or creator (1)?"
 if gets.chomp.eql? "0"    # CPU random generated code
@@ -61,6 +70,7 @@ if gets.chomp.eql? "0"    # CPU random generated code
 else
     puts "Enter your 4 digit code: "
     code = gets.chomp.split(' ').map(&:to_i) # Collect user input as array
+    cpuPlaying = true
 end
 
 
@@ -71,9 +81,19 @@ pegsArr = Array.new(turns) { Array.new(2) { 0 } }
 # Main game loop
 while loopCountdown >= 1
     tempCode = code.map(&:clone)    # Copy code array to not modify it
+
+    if cpuPlaying
+        # CPU Code
+        puts "The computer is guessing..."
+        sleep 1
+        inputArr = cpuGuess(count, pegsArr)
+        p inputArr
+    else
+        # Human Code
+        puts "What would you like to guess?"
+        inputArr = gets.chomp.split(' ').map(&:to_i) # Collect user input as array
+    end
     
-    puts "What would you like to guess?"
-    inputArr = gets.chomp.split(' ').map(&:to_i) # Collect user input as array
     guessBoard[count] = inputArr.map(&:clone)
     
     exactPegs = findExact(tempCode, inputArr)
