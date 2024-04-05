@@ -50,19 +50,65 @@ def findInexact(tempCode, inputArr)
     return pegs
 end
 
-def cpuGuess(count, pegsArr)
+# https://puzzling.stackexchange.com/questions/546/clever-ways-to-solve-mastermind
+def cpuGuess(count, pegsArr, allGuessesArr)
+    exactPegs = pegsArr[count-1][0]
+    inexactPegs = pegsArr[count-1][1]
+
     if count.eql? 0
-        guess = Array.new(4) { rand(1...5) } # 1st guess is random
+        guess = [1122]    # Initial guess
+    elsif count.eql? 1
+        if exactPegs.eql? 0
+            if inexactPegs.eql? 0
+                # remove all combinations containing those digits
     end
 
-    return guess
+    return guess[0].digits.reverse
+
+
+    # if count.eql? 0
+    #     # guess = Array.new(4) { rand(1...5) } # 1st guess is random
+    #     return guess
+    # elsif count.eql? 1
+    #     if exactPegs > 0
+    #         # There are some 1's
+    #         for i in exactPegs..3 do
+    #             guess[i] = 2
+    #         end
+    #     else
+    #         # There are no 1's
+    #     end
+    # elsif count.eql? 2
+    #     if exactPegs > 0
+    #         # There are some 2's
+    #         for i in exactPegs..3 do
+    #             guess[i] = 3
+    #         end
+    #     else
+    #         # There are no 1's
+    #     end
+    # end
+    #
+    #return guess
 end
+
+def removeDigits(allGuessesArr, guess)
+    # Loop thru all entries in the guess array
+    splitGuess = guess.to_s.each_char.each_slice(1).map{|x| x.join}
+    for i in 0..allGuessesArr.length() do
+        splitGuessArr = allGuessesArr[i].to_s.each_char.each_slice(1).map{|x| x.join}
+
+
+end
+
+
 
 turns = 12  # Adjust to lengthen or shorten game
 loopCountdown = turns
 count = 0
 exitedLoop = true
 cpuPlaying = false
+allGuessesArr = (1111..4444).to_a
 
 puts "Would you like to be the player (0) or creator (1)?"
 if gets.chomp.eql? "0"    # CPU random generated code
@@ -86,7 +132,7 @@ while loopCountdown >= 1
         # CPU Code
         puts "The computer is guessing..."
         sleep 1
-        inputArr = cpuGuess(count, pegsArr)
+        inputArr = cpuGuess(count, pegsArr, allGuessesArr)
         p inputArr
     else
         # Human Code
